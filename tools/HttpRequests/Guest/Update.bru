@@ -1,0 +1,25 @@
+meta {
+  name: Update
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{java-url}}/guests
+  body: json
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "name": "Marcos",
+    "password": {{password}},
+    "role": "host"
+  }
+}

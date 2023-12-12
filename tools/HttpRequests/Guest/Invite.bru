@@ -1,0 +1,24 @@
+meta {
+  name: Invite
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{java-url}}/guests/invite/Abel
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "name": "Júlia",
+    "password": "",
+    "role": "guest"
+  }
+}

@@ -1,0 +1,16 @@
+meta {
+  name: FindById
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{java-url}}/guests/1
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}

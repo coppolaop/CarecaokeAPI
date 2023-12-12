@@ -1,0 +1,16 @@
+meta {
+  name: Invitations
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{java-url}}/guests/invitations
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
