@@ -7,12 +7,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-
-import java.util.List;
+import jakarta.ws.rs.core.Response;
 
 @Path( "/guests" )
 public class GuestController {
-
 	@Inject
 	GuestService service;
 
@@ -21,8 +19,10 @@ public class GuestController {
 	@RolesAllowed( "host" )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Guest create( Guest guest ) {
-		return service.create( guest );
+	public Response create( Guest guest ) {
+		return Response.status( Response.Status.CREATED.getStatusCode( ) )
+					   .entity( service.create( guest ) )
+					   .build( );
 	}
 
 	@POST
@@ -30,31 +30,33 @@ public class GuestController {
 	@Transactional
 	@RolesAllowed( "host" )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Guest invite( @PathParam( "name" ) String name ) {
-		return service.invite( name );
+	public Response invite( @PathParam( "name" ) String name ) {
+		return Response.status( Response.Status.CREATED.getStatusCode( ) )
+					   .entity( service.invite( name ) )
+					   .build( );
 	}
 
 	@GET
 	@RolesAllowed( "host" )
 	@Produces( MediaType.APPLICATION_JSON )
-	public List< Guest > readAll( ) {
-		return service.readAll( );
+	public Response readAll( ) {
+		return Response.ok( service.readAll( ) ).build( );
 	}
 
 	@GET
 	@Path( "{id}" )
 	@RolesAllowed( "host" )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Guest readById( @PathParam( "id" ) Long id ) {
-		return service.readById( id );
+	public Response readById( @PathParam( "id" ) Long id ) {
+		return Response.ok( service.readById( id ) ).build( );
 	}
 
 	@GET
 	@Path( "invitations" )
 	@RolesAllowed( "host" )
 	@Produces( MediaType.APPLICATION_JSON )
-	public List< String > getAllInvitations( ) {
-		return service.getAllInvitations( );
+	public Response getAllInvitations( ) {
+		return Response.ok( service.getAllInvitations( ) ).build( );
 	}
 
 	@PUT
@@ -62,15 +64,16 @@ public class GuestController {
 	@RolesAllowed( "host" )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Guest update( Guest guest ) {
-		return service.update( guest );
+	public Response update( Guest guest ) {
+		return Response.ok( service.update( guest ) ).build( );
 	}
 
 	@DELETE
 	@Path( "{id}" )
 	@Transactional
 	@RolesAllowed( "host" )
-	public void delete( @PathParam( "id" ) Long id ) {
+	public Response delete( @PathParam( "id" ) Long id ) {
 		service.delete( id );
+		return Response.noContent( ).build( );
 	}
 }
