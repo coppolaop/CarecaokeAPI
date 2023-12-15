@@ -9,6 +9,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Assertions;
@@ -155,6 +156,28 @@ public class GuestControllerTest {
 
 	@Test
 	@TestSecurity( user = "tester", roles = { "host" } )
+	public void readById_Fail_NotFound( ) {
+		when( service.readById( any( ) ) ).thenThrow(
+				new EntityNotFoundException( "Guest not found with ID: " + FIRST_GUEST_ID ) );
+
+		boolean wasThrown = false;
+		try {
+			controller.readById( FIRST_GUEST_ID );
+		} catch ( EntityNotFoundException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, times( 1 ) ).readById( any( ) );
+		given( ).pathParam( "id", FIRST_GUEST_ID )
+				.when( )
+				.get( "/guests/{id}" )
+				.then( )
+				.statusCode( Response.Status.NOT_FOUND.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = { "host" } )
 	public void getAllInvitations_Success( ) {
 		List< String > invitations = guestList.stream( )
 											  .map( Guest::getName )
@@ -237,6 +260,31 @@ public class GuestControllerTest {
 
 	@Test
 	@TestSecurity( user = "tester", roles = { "host" } )
+	public void update_Fail_BadRequest( ) {
+		Guest newGuest = new Guest( null, "Coppola", "123123", HOST_ROLE );
+		when( service.update( any( ) ) ).thenThrow(
+				new IllegalArgumentException( "Guest with no Id" ) );
+
+		boolean wasThrown = false;
+		try {
+			controller.update( newGuest );
+		} catch ( IllegalArgumentException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, times( 1 ) ).update( any( Guest.class ) );
+		given( ).when( )
+				.body( newGuest )
+				.contentType( MediaType.APPLICATION_JSON )
+				.accept( MediaType.APPLICATION_JSON )
+				.put( "/guests" )
+				.then( )
+				.statusCode( Response.Status.BAD_REQUEST.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = { "host" } )
 	public void delete_Success( ) {
 		doNothing( ).when( service ).delete( any( ) );
 
@@ -269,5 +317,26 @@ public class GuestControllerTest {
 				.delete( "/guests/{id}" )
 				.then( )
 				.statusCode( Response.Status.FORBIDDEN.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = { "host" } )
+	public void delete_Fail_NotFound( ) {
+		doThrow( new EntityNotFoundException( ) ).when( service ).delete( any( ) );
+
+		boolean wasThrown = false;
+		try {
+			controller.delete( FIRST_GUEST_ID );
+		} catch ( EntityNotFoundException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, times( 1 ) ).delete( any( ) );
+		given( ).pathParam( "id", FIRST_GUEST_ID )
+				.when( )
+				.delete( "/guests/{id}" )
+				.then( )
+				.statusCode( Response.Status.NOT_FOUND.getStatusCode( ) );
 	}
 }
