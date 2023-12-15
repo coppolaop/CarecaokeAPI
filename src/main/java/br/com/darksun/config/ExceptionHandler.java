@@ -22,10 +22,14 @@ public class ExceptionHandler implements ExceptionMapper< Exception > {
 							   .build( );
 			}
 			case IllegalArgumentException illegalArgumentException -> {
-				return Response.status( 400 ).entity( exception.getMessage( ) ).build( );
+				return Response.status( Response.Status.BAD_REQUEST )
+							   .entity( exception.getMessage( ) )
+							   .build( );
 			}
 			case EntityNotFoundException entityNotFoundException -> {
-				return Response.status( 404 ).entity( exception.getMessage( ) ).build( );
+				return Response.status( Response.Status.NOT_FOUND )
+							   .entity( exception.getMessage( ) )
+							   .build( );
 			}
 			case null, default -> {
 				return Response.serverError( ).entity( "Internal Server Error" ).build( );
