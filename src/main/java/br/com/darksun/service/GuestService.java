@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class GuestService {
-	static final String HOST_ROLE  = "host";
-	static final String GUEST_ROLE = "guest";
+	public static final String HOST_ROLE  = "host";
+	public static final String GUEST_ROLE = "guest";
 
 	@Inject
 	GuestRepository repository;
