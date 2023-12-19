@@ -1,0 +1,28 @@
+meta {
+  name: Update
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{java-url}}/musics
+  body: json
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "name": "All Star",
+    "artist": "Smash Mouth",
+    "url": "https://www.youtube.com/watch?v=ABOYo7ioQJo&ab_channel=SingKing",
+    "singer": {
+      "id": 1
+    }
+  }
+}
