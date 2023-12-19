@@ -58,7 +58,10 @@ public class GuestService {
 	}
 
 	public void delete( Long id ) {
-		repository.deleteById( id );
+		boolean wasDeleted = repository.deleteById( id );
+		if ( !wasDeleted ) {
+			throw new EntityNotFoundException( "Guest not found with ID: " + id );
+		}
 	}
 
 	private void applyBusinessRules( Guest guest ) {
