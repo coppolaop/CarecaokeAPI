@@ -1,11 +1,11 @@
 meta {
   name: Invite
   type: http
-  seq: 5
+  seq: 6
 }
 
 post {
-  url: {{java-url}}/guests/invite/Abel
+  url: {{java-url}}/guests/invite/{{guest}}
   body: none
   auth: basic
 }
