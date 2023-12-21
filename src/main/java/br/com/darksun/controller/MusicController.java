@@ -16,7 +16,7 @@ public class MusicController {
 
 	@POST
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( { "host", "guest" } )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response create( Music music ) {
