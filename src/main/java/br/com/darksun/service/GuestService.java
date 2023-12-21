@@ -43,6 +43,12 @@ public class GuestService {
 								 "Guest not found with ID: " + id ) );
 	}
 
+	protected Guest readByName( String name ) {
+		return repository.findByNameOptional( name )
+						 .orElseThrow( ( ) -> new EntityNotFoundException(
+								 "Guest not found with name: " + name ) );
+	}
+
 	public List< String > getAllInvitations( ) {
 		return readAll( ).stream( ).map( Guest::getName ).collect( Collectors.toList( ) );
 	}
