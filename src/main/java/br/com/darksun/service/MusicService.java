@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class MusicService {
@@ -34,10 +33,6 @@ public class MusicService {
 		return repository.findByIdOptional( id )
 						 .orElseThrow( ( ) -> new EntityNotFoundException(
 								 "Music not found with ID: " + id ) );
-	}
-
-	public List< String > getAllInvitations( ) {
-		return readAll( ).stream( ).map( Music::getName ).collect( Collectors.toList( ) );
 	}
 
 	public Music update( Music music ) {
