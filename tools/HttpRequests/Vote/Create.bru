@@ -1,0 +1,25 @@
+meta {
+  name: Create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{java-url}}/votes
+  body: json
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "score": 3,
+    "itsFor": {
+      "id": 2
+    }
+  }
+}

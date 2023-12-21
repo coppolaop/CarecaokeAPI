@@ -1,0 +1,29 @@
+meta {
+  name: FindAll
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{java-url}}/votes
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "score": 3,
+    "itsFor": {
+      "id": 1
+    },
+    "whoVotes": {
+      "id": 1
+    }
+  }
+}

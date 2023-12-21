@@ -1,0 +1,29 @@
+meta {
+  name: Delete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{java-url}}/votes/1
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "score": 3,
+    "itsFor": {
+      "id": 1
+    },
+    "whoVotes": {
+      "id": 1
+    }
+  }
+}
