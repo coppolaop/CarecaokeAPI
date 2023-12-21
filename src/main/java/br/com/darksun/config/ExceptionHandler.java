@@ -31,8 +31,11 @@ public class ExceptionHandler implements ExceptionMapper< Exception > {
 							   .entity( exception.getMessage( ) )
 							   .build( );
 			}
-			case null, default -> {
-				return Response.serverError( ).entity( "Internal Server Error" ).build( );
+			case null -> {
+				return Response.serverError( ).entity( "Unknown Internal Server Error" ).build( );
+			}
+			default -> {
+				return Response.serverError( ).entity( exception ).build( );
 			}
 		}
 	}
