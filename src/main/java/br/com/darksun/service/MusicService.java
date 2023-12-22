@@ -40,6 +40,9 @@ public class MusicService {
 			throw new IllegalArgumentException( "Music with no Id" );
 		}
 		readById( music.getId( ) );
+		if ( music.getCreatedAt( ) == null ) {
+			music.setCreatedAt( LocalDateTime.now( ) );
+		}
 		applyBusinessRules( music );
 		repository.getEntityManager( ).merge( music );
 		return music;

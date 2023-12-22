@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,15 +16,16 @@ import java.io.Serializable;
 @Entity
 public class Music implements Serializable {
 	@Serial
-	private static final long serialVersionUID = -5004976300148121153L;
+	private static final long serialVersionUID = -2505468630149843656L;
 	
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
-	private Long    id;
-	private String  name;
-	private String  artist;
-	private String  url;
-	private Boolean hasBeenSung;
+	private Long          id;
+	private String        name;
+	private String        artist;
+	private String        url;
+	private Boolean       hasBeenSung;
+	private LocalDateTime createdAt;
 	@ManyToOne
-	private Guest   singer;
+	private Guest         singer;
 }
