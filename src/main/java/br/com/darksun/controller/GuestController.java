@@ -9,6 +9,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import static br.com.darksun.service.GuestService.HOST_ROLE;
+
 @Path( "/guests" )
 public class GuestController {
 	@Inject
@@ -16,7 +18,7 @@ public class GuestController {
 
 	@POST
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response create( Guest guest ) {
@@ -28,7 +30,7 @@ public class GuestController {
 	@POST
 	@Path( "invite/{name}" )
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response invite( @PathParam( "name" ) String name ) {
 		return Response.status( Response.Status.CREATED.getStatusCode( ) )
@@ -37,7 +39,7 @@ public class GuestController {
 	}
 
 	@GET
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response readAll( ) {
 		return Response.ok( service.readAll( ) ).build( );
@@ -45,7 +47,7 @@ public class GuestController {
 
 	@GET
 	@Path( "{id}" )
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response readById( @PathParam( "id" ) Long id ) {
 		return Response.ok( service.readById( id ) ).build( );
@@ -53,7 +55,7 @@ public class GuestController {
 
 	@GET
 	@Path( "invitations" )
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response getAllInvitations( ) {
 		return Response.ok( service.getAllInvitations( ) ).build( );
@@ -61,7 +63,7 @@ public class GuestController {
 
 	@PUT
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response update( Guest guest ) {
@@ -71,7 +73,7 @@ public class GuestController {
 	@DELETE
 	@Path( "{id}" )
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	public Response delete( @PathParam( "id" ) Long id ) {
 		service.delete( id );
 		return Response.noContent( ).build( );

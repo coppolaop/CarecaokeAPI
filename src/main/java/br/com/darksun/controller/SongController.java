@@ -9,6 +9,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import static br.com.darksun.service.GuestService.GUEST_ROLE;
+import static br.com.darksun.service.GuestService.HOST_ROLE;
+
 @Path( "/songs" )
 public class SongController {
 	@Inject
@@ -16,7 +19,7 @@ public class SongController {
 
 	@POST
 	@Transactional
-	@RolesAllowed( { "host", "guest" } )
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response create( Song song ) {
@@ -26,7 +29,7 @@ public class SongController {
 	}
 
 	@GET
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response readAll( ) {
 		return Response.ok( service.readAll( ) ).build( );
@@ -34,7 +37,7 @@ public class SongController {
 
 	@GET
 	@Path( "{id}" )
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response readById( @PathParam( "id" ) Long id ) {
 		return Response.ok( service.readById( id ) ).build( );
@@ -42,7 +45,7 @@ public class SongController {
 
 	@GET
 	@Path( "next" )
-	@RolesAllowed( { "host", "guest" } )
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response nextSongs( ) {
 		return Response.ok( service.getNextSongs( ) ).build( );
@@ -50,7 +53,7 @@ public class SongController {
 
 	@PUT
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response update( Song song ) {
@@ -60,7 +63,7 @@ public class SongController {
 	@DELETE
 	@Path( "{id}" )
 	@Transactional
-	@RolesAllowed( "host" )
+	@RolesAllowed( HOST_ROLE )
 	public Response delete( @PathParam( "id" ) Long id ) {
 		service.delete( id );
 		return Response.noContent( ).build( );
