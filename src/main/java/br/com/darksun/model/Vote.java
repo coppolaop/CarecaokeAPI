@@ -18,7 +18,7 @@ public class Vote {
 	private Short score;
 
 	@ManyToOne
-	private Music itsFor;
+	private Song  itsFor;
 	@ManyToOne
 	private Guest whoVotes;
 }

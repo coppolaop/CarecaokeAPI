@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 @Entity
-public class Music implements Serializable {
+public class Song implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -2505468630149843656L;
 	

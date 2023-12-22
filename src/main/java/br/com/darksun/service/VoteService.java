@@ -19,7 +19,7 @@ public class VoteService {
 	GuestService guestService;
 
 	@Inject
-	MusicService musicService;
+	SongService songService;
 
 	public Vote create( Vote vote, String whoVote ) {
 		vote.setId( null );
@@ -47,7 +47,7 @@ public class VoteService {
 
 	private void applyBusinessRules( Vote vote, String whoVotesName ) {
 		vote.setWhoVotes( guestService.readByName( whoVotesName ) );
-		vote.setItsFor( musicService.readById( vote.getItsFor( ).getId( ) ) );
+		vote.setItsFor( songService.readById( vote.getItsFor( ).getId( ) ) );
 		if ( vote.getItsFor( ).getSinger( ).getName( ).equalsIgnoreCase( whoVotesName ) ) {
 			throw new IllegalArgumentException( whoVotesName + ", you cannot vote on your song" );
 		}

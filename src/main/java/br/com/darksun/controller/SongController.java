@@ -1,7 +1,7 @@
 package br.com.darksun.controller;
 
-import br.com.darksun.model.Music;
-import br.com.darksun.service.MusicService;
+import br.com.darksun.model.Song;
+import br.com.darksun.service.SongService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -9,19 +9,19 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path( "/musics" )
-public class MusicController {
+@Path( "/songs" )
+public class SongController {
 	@Inject
-	MusicService service;
+	SongService service;
 
 	@POST
 	@Transactional
 	@RolesAllowed( { "host", "guest" } )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Response create( Music music ) {
+	public Response create( Song song ) {
 		return Response.status( Response.Status.CREATED.getStatusCode( ) )
-					   .entity( service.create( music ) )
+					   .entity( service.create( song ) )
 					   .build( );
 	}
 
@@ -53,8 +53,8 @@ public class MusicController {
 	@RolesAllowed( "host" )
 	@Consumes( MediaType.APPLICATION_JSON )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Response update( Music music ) {
-		return Response.ok( service.update( music ) ).build( );
+	public Response update( Song song ) {
+		return Response.ok( service.update( song ) ).build( );
 	}
 
 	@DELETE
