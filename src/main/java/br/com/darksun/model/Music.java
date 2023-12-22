@@ -15,15 +15,15 @@ import java.io.Serializable;
 @Entity
 public class Music implements Serializable {
 	@Serial
-	private static final long serialVersionUID = 6463603621276500765L;
-
+	private static final long serialVersionUID = -5004976300148121153L;
+	
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long    id;
 	private String  name;
 	private String  artist;
 	private String  url;
-	private Boolean HasBeenSung;
+	private Boolean hasBeenSung;
 	@ManyToOne
 	private Guest   singer;
 }
