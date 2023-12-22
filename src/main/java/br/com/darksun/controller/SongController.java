@@ -6,8 +6,10 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import static br.com.darksun.service.GuestService.GUEST_ROLE;
 import static br.com.darksun.service.GuestService.HOST_ROLE;
@@ -41,6 +43,15 @@ public class SongController {
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response readById( @PathParam( "id" ) Long id ) {
 		return Response.ok( service.readById( id ) ).build( );
+	}
+
+	@GET
+	@Path( "mine" )
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response readMySongs( @Context SecurityContext securityContext ) {
+		return Response.ok( service.readMySongs( securityContext.getUserPrincipal( ).getName( ) ) )
+					   .build( );
 	}
 
 	@GET

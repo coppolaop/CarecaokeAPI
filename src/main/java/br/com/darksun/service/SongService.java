@@ -1,5 +1,6 @@
 package br.com.darksun.service;
 
+import br.com.darksun.model.Guest;
 import br.com.darksun.model.Song;
 import br.com.darksun.repository.SongRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,6 +37,11 @@ public class SongService {
 		return repository.findByIdOptional( id )
 						 .orElseThrow( ( ) -> new EntityNotFoundException(
 								 "Song not found with ID: " + id ) );
+	}
+
+	public List< Song > readMySongs( String singerName ) {
+		Guest singer = guestService.readByName( singerName );
+		return repository.findAllBySinger( singer );
 	}
 
 	public List< String > getNextSongs( ) {

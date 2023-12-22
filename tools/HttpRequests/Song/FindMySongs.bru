@@ -1,11 +1,11 @@
 meta {
-  name: Delete
+  name: FindMySongs
   type: http
-  seq: 6
+  seq: 3
 }
 
-delete {
-  url: {{java-url}}/songs/1
+get {
+  url: {{java-url}}/songs/mine
   body: none
   auth: basic
 }
