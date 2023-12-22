@@ -2,6 +2,7 @@ package br.com.darksun.controller;
 
 import br.com.darksun.model.Guest;
 import br.com.darksun.service.GuestService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -24,6 +25,17 @@ public class GuestController {
 	public Response create( Guest guest ) {
 		return Response.status( Response.Status.CREATED.getStatusCode( ) )
 					   .entity( service.create( guest ) )
+					   .build( );
+	}
+
+	@POST
+	@Path( "host/first" )
+	@Transactional
+	@PermitAll
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response createFirstHost( ) {
+		return Response.status( Response.Status.CREATED.getStatusCode( ) )
+					   .entity( service.firstHost( ) )
 					   .build( );
 	}
 

@@ -26,11 +26,15 @@ public class GuestService {
 		return guest;
 	}
 
+	public Guest firstHost( ) {
+		if ( !readAll( ).isEmpty( ) ) {
+			throw new IllegalArgumentException( "Invalid option" );
+		}
+		return create( new Guest( null, "Coppola", "", "host" ) );
+	}
+
 	public Guest invite( String name ) {
-		Guest guest = new Guest( null, name, "", "" );
-		applyBusinessRules( guest );
-		repository.persist( guest );
-		return guest;
+		return create( new Guest( null, name, "", "" ) );
 	}
 
 	public List< Guest > readAll( ) {

@@ -1,13 +1,13 @@
 meta {
-  name: Invite
+  name: FirstHost
   type: http
-  seq: 5
+  seq: 6
 }
 
 post {
-  url: {{java-url}}/guests/invite/{{guest}}
+  url: {{java-url}}/guests/host/first
   body: none
-  auth: basic
+  auth: none
 }
 
 auth:basic {
