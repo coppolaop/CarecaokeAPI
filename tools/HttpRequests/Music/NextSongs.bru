@@ -1,0 +1,16 @@
+meta {
+  name: NextSongs
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{java-url}}/musics/next
+  body: none
+  auth: basic
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}

@@ -6,6 +6,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -20,6 +22,7 @@ public class MusicService {
 	public Music create( Music music ) {
 		music.setId( null );
 		music.setHasBeenSung( false );
+		music.setCreatedAt( LocalDateTime.now( ) );
 		applyBusinessRules( music );
 		repository.persist( music );
 		return music;
@@ -33,6 +36,17 @@ public class MusicService {
 		return repository.findByIdOptional( id )
 						 .orElseThrow( ( ) -> new EntityNotFoundException(
 								 "Music not found with ID: " + id ) );
+	}
+
+	public List< String > getNextSongs( ) {
+		List< Music >  nextSongs = repository.findAllByHasNotBeenSung( );
+		List< String > response  = new ArrayList<>( );
+		nextSongs.forEach( music -> response.add(
+				new StringBuilder( ).append( music.getSinger( ).getName( ) )
+									.append( " - " )
+									.append( music.getName( ) )
+									.toString( ) ) );
+		return response;
 	}
 
 	public Music update( Music music ) {

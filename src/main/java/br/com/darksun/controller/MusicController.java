@@ -40,6 +40,14 @@ public class MusicController {
 		return Response.ok( service.readById( id ) ).build( );
 	}
 
+	@GET
+	@Path( "next" )
+	@RolesAllowed( { "host", "guest" } )
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response nextSongs( ) {
+		return Response.ok( service.getNextSongs( ) ).build( );
+	}
+
 	@PUT
 	@Transactional
 	@RolesAllowed( "host" )
