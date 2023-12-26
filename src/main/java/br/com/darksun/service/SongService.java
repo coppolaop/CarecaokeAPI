@@ -95,6 +95,15 @@ public class SongService {
 		if ( song.getSinger( ) == null || song.getSinger( ).getId( ) == null ) {
 			throw new IllegalArgumentException( "This song has no singer" );
 		}
-		guestService.readById( song.getSinger( ).getId( ) );
+		song.setSinger( guestService.readById( song.getSinger( ).getId( ) ) );
+
+		readMySongs( song.getSinger( ).getName( ) ).forEach( dbSong -> {
+			if ( dbSong.getName( ).equalsIgnoreCase( song.getName( ) ) && !dbSong.getId( )
+																				 .equals(
+																						 song.getId( ) ) ) {
+				throw new IllegalArgumentException(
+						"This singer has two songs with same name, please make it different" );
+			}
+		} );
 	}
 }
