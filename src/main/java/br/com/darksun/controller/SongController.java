@@ -79,4 +79,14 @@ public class SongController {
 		service.delete( id );
 		return Response.noContent( ).build( );
 	}
+
+	@DELETE
+	@Path( "mine/{name}" )
+	@Transactional
+	@RolesAllowed( HOST_ROLE )
+	public Response deleteMySong( @PathParam( "name" ) String name,
+								  @Context SecurityContext securityContext ) {
+		service.deleteMySong( name, securityContext.getUserPrincipal( ).getName( ) );
+		return Response.noContent( ).build( );
+	}
 }

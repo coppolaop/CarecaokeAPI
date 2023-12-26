@@ -75,6 +75,22 @@ public class SongService {
 		}
 	}
 
+	public void deleteMySong( String name, String singerName ) {
+		Song song = readMySongs( singerName ).stream( )
+											 .filter( dbSong -> dbSong.getName( )
+																	  .equalsIgnoreCase( name ) )
+											 .findAny( )
+											 .orElseThrow( ( ) -> new EntityNotFoundException(
+													 new StringBuilder(
+															 "Song not found with Name: " ).append(
+															 name ).toString( ) ) );
+		if ( song.getHasBeenSung( ) ) {
+			throw new IllegalArgumentException( "You cannot delete a song that was already sung" );
+		}
+
+		delete( song.getId( ) );
+	}
+
 	private void applyBusinessRules( Song song ) {
 		if ( song.getSinger( ) == null || song.getSinger( ).getId( ) == null ) {
 			throw new IllegalArgumentException( "This song has no singer" );
