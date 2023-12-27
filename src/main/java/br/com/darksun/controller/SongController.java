@@ -55,11 +55,11 @@ public class SongController {
 	}
 
 	@GET
-	@Path( "next" )
+	@Path( "list" )
 	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
 	@Produces( MediaType.APPLICATION_JSON )
-	public Response nextSongs( ) {
-		return Response.ok( service.getNextSongs( ) ).build( );
+	public Response songList( ) {
+		return Response.ok( service.readAllNextSongs( ) ).build( );
 	}
 
 	@PUT
@@ -69,6 +69,15 @@ public class SongController {
 	@Produces( MediaType.APPLICATION_JSON )
 	public Response update( Song song ) {
 		return Response.ok( service.update( song ) ).build( );
+	}
+
+	@PUT
+	@Path( "next" )
+	@Transactional
+	@RolesAllowed( { HOST_ROLE } )
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response nextSong( ) {
+		return Response.ok( service.nextSong( ) ).build( );
 	}
 
 	@DELETE

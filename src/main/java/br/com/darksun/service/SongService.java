@@ -44,7 +44,7 @@ public class SongService {
 		return repository.findAllBySinger( singer );
 	}
 
-	public List< String > getNextSongs( ) {
+	public List< String > readAllNextSongs( ) {
 		List< Song >   nextSongs = repository.findAllByHasNotBeenSung( );
 		List< String > response  = new ArrayList<>( );
 		nextSongs.forEach( song -> response.add(
@@ -66,6 +66,13 @@ public class SongService {
 		applyBusinessRules( song );
 		repository.getEntityManager( ).merge( song );
 		return song;
+	}
+
+	public Song nextSong( ) {
+		Song song = repository.findByHasNotBeenSung( );
+		song.setHasBeenSung( true );
+		repository.getEntityManager( ).merge( song );
+		return repository.findByHasNotBeenSung( );
 	}
 
 	public void delete( Long id ) {

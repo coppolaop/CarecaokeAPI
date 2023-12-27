@@ -16,4 +16,8 @@ public class SongRepository implements PanacheRepository< Song > {
 	public List< Song > findAllBySinger( Guest singer ) {
 		return this.find( "singer", singer ).list( );
 	}
+
+	public Song findByHasNotBeenSung( ) {
+		return this.find( "hasBeenSung = ?1 order by createdAt", false ).firstResult( );
+	}
 }

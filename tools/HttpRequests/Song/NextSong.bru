@@ -1,12 +1,12 @@
 meta {
-  name: NextSongs
+  name: NextSong
   type: http
-  seq: 4
+  seq: 7
 }
 
-get {
+put {
   url: {{java-url}}/songs/next
-  body: none
+  body: json
   auth: basic
 }
 

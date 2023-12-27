@@ -1,11 +1,11 @@
 meta {
-  name: DeleteMySong
+  name: SongList
   type: http
-  seq: 9
+  seq: 4
 }
 
-delete {
-  url: {{java-url}}/songs/mine/Halo
+get {
+  url: {{java-url}}/songs/list
   body: none
   auth: basic
 }
