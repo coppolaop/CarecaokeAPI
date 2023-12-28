@@ -92,7 +92,7 @@ public class SongController {
 	@DELETE
 	@Path( "mine/{name}" )
 	@Transactional
-	@RolesAllowed( HOST_ROLE )
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
 	public Response deleteMySong( @PathParam( "name" ) String name,
 								  @Context SecurityContext securityContext ) {
 		service.deleteMySong( name, securityContext.getUserPrincipal( ).getName( ) );
