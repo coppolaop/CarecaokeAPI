@@ -248,7 +248,7 @@ public class SongControllerTest {
 
 	@Test
 	@TestSecurity( user = "tester", roles = HOST_ROLE )
-	public void readMySongs_Success_EmptyList( ) {
+	public void readMySongs_Success_Empty( ) {
 		SecurityContext securityContext = mock( SecurityContext.class );
 		Principal       principal       = mock( Principal.class );
 		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
@@ -419,8 +419,56 @@ public class SongControllerTest {
 				.statusCode( Response.Status.BAD_REQUEST.getStatusCode( ) );
 	}
 
-	//TODO next_Song_Sucess_Simple
-	//TODO next_Song_Sucess_Empty
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
+	public void nextSong_Sucess_Simple( ) {
+		when( service.nextSong( ) ).thenReturn( songList.get( 1 ) );
+
+		Song response = ( ( Song ) controller.nextSong( ).getEntity( ) );
+
+		Assertions.assertEquals( songList.get( 1 ), response );
+		verify( service, times( 1 ) ).nextSong( );
+		given( ).when( )
+				.put( "/songs/next" )
+				.then( )
+				.statusCode( Response.Status.OK.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
+	public void nextSong_Sucess_Empty( ) {
+		when( service.nextSong( ) ).thenReturn( null );
+
+		Song response = ( ( Song ) controller.nextSong( ).getEntity( ) );
+
+		Assertions.assertEquals( null, response );
+		verify( service, times( 1 ) ).nextSong( );
+		given( ).when( )
+				.put( "/songs/next" )
+				.then( )
+				.statusCode( Response.Status.OK.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
+	public void nextSong_Fail_Credentials( ) {
+		when( service.nextSong( ) ).thenReturn( songList.get( 1 ) );
+
+		boolean wasThrown = false;
+		try {
+			controller.nextSong( );
+		} catch ( ForbiddenException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, never( ) ).update( any( Song.class ) );
+		given( ).when( )
+				.contentType( MediaType.APPLICATION_JSON )
+				.put( "/songs/next" )
+				.then( )
+				.statusCode( Response.Status.FORBIDDEN.getStatusCode( ) );
+	}
 
 	@Test
 	@TestSecurity( user = "tester", roles = HOST_ROLE )
