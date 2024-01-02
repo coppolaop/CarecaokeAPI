@@ -527,8 +527,66 @@ public class SongControllerTest {
 				.statusCode( Response.Status.NOT_FOUND.getStatusCode( ) );
 	}
 
-	//TODO deleteMySong_Success_Host
-	//TODO deleteMySong_Success_Guest
-	//TODO deleteMySong_Success_Empty
-	//TODO deleteMySong_Fail_Credentials
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
+	public void deleteMySong_Success_Host( ) {
+		SecurityContext securityContext = mock( SecurityContext.class );
+		Principal       principal       = mock( Principal.class );
+		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
+		when( principal.getName( ) ).thenReturn( songList.getFirst( ).getSinger( ).getName( ) );
+		doNothing( ).when( service ).deleteMySong( any( ), any( ) );
+
+		controller.deleteMySong( songList.getFirst( ).getName( ), securityContext );
+
+		verify( service, times( 1 ) ).deleteMySong( any( ), any( ) );
+		given( ).pathParam( "name", songList.getFirst( ).getName( ) )
+				.when( )
+				.delete( "/songs/mine/{name}" )
+				.then( )
+				.statusCode( Response.Status.NO_CONTENT.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
+	public void deleteMySong_Success_Guest( ) {
+		SecurityContext securityContext = mock( SecurityContext.class );
+		Principal       principal       = mock( Principal.class );
+		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
+		when( principal.getName( ) ).thenReturn( songList.getFirst( ).getSinger( ).getName( ) );
+		doNothing( ).when( service ).deleteMySong( any( ), any( ) );
+
+		controller.deleteMySong( songList.getFirst( ).getName( ), securityContext );
+
+		verify( service, times( 1 ) ).deleteMySong( any( ), any( ) );
+		given( ).pathParam( "name", songList.getFirst( ).getName( ) )
+				.when( )
+				.delete( "/songs/mine/{name}" )
+				.then( )
+				.statusCode( Response.Status.NO_CONTENT.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = "" )
+	public void deleteMySong_Fail_Credentials( ) {
+		SecurityContext securityContext = mock( SecurityContext.class );
+		Principal       principal       = mock( Principal.class );
+		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
+		when( principal.getName( ) ).thenReturn( songList.getFirst( ).getSinger( ).getName( ) );
+		doNothing( ).when( service ).deleteMySong( any( ), any( ) );
+
+		boolean wasThrown = false;
+		try {
+			controller.deleteMySong( songList.getFirst( ).getName( ), securityContext );
+		} catch ( ForbiddenException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, never( ) ).delete( any( ) );
+		given( ).pathParam( "name", songList.getFirst( ).getName( ) )
+				.when( )
+				.delete( "/songs/mine/{name}" )
+				.then( )
+				.statusCode( Response.Status.FORBIDDEN.getStatusCode( ) );
+	}
 }
