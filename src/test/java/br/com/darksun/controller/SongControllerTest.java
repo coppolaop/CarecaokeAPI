@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -208,11 +209,11 @@ public class SongControllerTest {
 	@Test
 	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void readMySongs_Success_Host( ) {
-		when( service.readMySongs( any( ) ) ).thenReturn( songList );
 		SecurityContext securityContext = mock( SecurityContext.class );
 		Principal       principal       = mock( Principal.class );
 		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
 		when( principal.getName( ) ).thenReturn( "tester" );
+		when( service.readMySongs( any( ) ) ).thenReturn( songList );
 
 		List< Song > response = ( ( List< Song > ) controller.readMySongs( securityContext )
 															 .getEntity( ) );
@@ -228,11 +229,11 @@ public class SongControllerTest {
 	@Test
 	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void readMySongs_Success_Guest( ) {
-		when( service.readMySongs( any( ) ) ).thenReturn( songList );
 		SecurityContext securityContext = mock( SecurityContext.class );
 		Principal       principal       = mock( Principal.class );
 		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
 		when( principal.getName( ) ).thenReturn( "tester" );
+		when( service.readMySongs( any( ) ) ).thenReturn( songList );
 
 		List< Song > response = ( ( List< Song > ) controller.readMySongs( securityContext )
 															 .getEntity( ) );
@@ -245,8 +246,50 @@ public class SongControllerTest {
 				.statusCode( Response.Status.OK.getStatusCode( ) );
 	}
 
-	//TODO readMySongs_Fail_Credentials
-	//TODO readMySongs_Fail_NotFound
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
+	public void readMySongs_Success_EmptyList( ) {
+		SecurityContext securityContext = mock( SecurityContext.class );
+		Principal       principal       = mock( Principal.class );
+		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
+		when( principal.getName( ) ).thenReturn( "tester" );
+		List< Song > emptySongList = new ArrayList<>( );
+		when( service.readMySongs( any( ) ) ).thenReturn( emptySongList );
+
+		List< Song > response = ( ( List< Song > ) controller.readMySongs( securityContext )
+															 .getEntity( ) );
+
+		Assertions.assertEquals( emptySongList, response );
+		Assertions.assertTrue( response.isEmpty( ) );
+		verify( service, times( 1 ) ).readMySongs( any( ) );
+		given( ).when( )
+				.get( "/songs/mine" )
+				.then( )
+				.statusCode( Response.Status.OK.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = "" )
+	public void readMySongs_Fail_Credentials( ) {
+		SecurityContext securityContext = mock( SecurityContext.class );
+		Principal       principal       = mock( Principal.class );
+		when( securityContext.getUserPrincipal( ) ).thenReturn( principal );
+		when( principal.getName( ) ).thenReturn( "tester" );
+
+		boolean wasThrown = false;
+		try {
+			controller.readMySongs( securityContext );
+		} catch ( ForbiddenException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, never( ) ).readById( any( ) );
+		given( ).when( )
+				.get( "/songs/mine" )
+				.then( )
+				.statusCode( Response.Status.FORBIDDEN.getStatusCode( ) );
+	}
 
 	@Test
 	@TestSecurity( user = "tester", roles = HOST_ROLE )
