@@ -2,6 +2,7 @@ package br.com.darksun;
 
 import br.com.darksun.model.Guest;
 import br.com.darksun.model.Song;
+import br.com.darksun.model.Vote;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class TestUtils {
 
 	private List< Guest > guests;
 	private List< Song >  songs;
+	private List< Vote >  votes;
 
 	public TestUtils( ) {
 		guests = new ArrayList<>( );
@@ -54,6 +56,20 @@ public class TestUtils {
 		songs.add( song3 );
 		songs.add( song4 );
 		songs.add( song5 );
+
+		votes = new ArrayList<>( );
+		Vote vote1 = new Vote( 1L, Short.valueOf( "3" ), song1, guest2 );
+		Vote vote2 = new Vote( 2L, Short.valueOf( "3" ), song1, guest3 );
+		Vote vote3 = new Vote( 3L, Short.valueOf( "3" ), song1, guest4 );
+		Vote vote4 = new Vote( 4L, Short.valueOf( "3" ), song1, guest5 );
+		Vote vote5 = new Vote( 5L, Short.valueOf( "3" ), song4, guest2 );
+		Vote vote6 = new Vote( 6L, Short.valueOf( "3" ), song4, guest5 );
+		votes.add( vote1 );
+		votes.add( vote2 );
+		votes.add( vote3 );
+		votes.add( vote4 );
+		votes.add( vote5 );
+		votes.add( vote6 );
 	}
 
 	public static PanacheQuery mockList( List list ) {
