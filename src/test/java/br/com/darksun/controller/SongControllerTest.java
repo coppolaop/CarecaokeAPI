@@ -117,12 +117,26 @@ public class SongControllerTest {
 
 	@Test
 	@TestSecurity( user = "tester", roles = HOST_ROLE )
-	public void readAll_Success( ) {
+	public void readAll_Success_Simple( ) {
 		when( service.readAll( ) ).thenReturn( songList );
 
 		List< Song > response = ( ( List< Song > ) controller.readAll( ).getEntity( ) );
 
 		Assertions.assertEquals( songList, response );
+		verify( service, times( 1 ) ).readAll( );
+		given( ).when( ).get( "/songs" ).then( ).statusCode( Response.Status.OK.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
+	public void readAll_Success_Empty( ) {
+		List< Song > newSongList = new ArrayList<>( );
+		when( service.readAll( ) ).thenReturn( newSongList );
+
+		List< Song > response = ( ( List< Song > ) controller.readAll( ).getEntity( ) );
+
+		Assertions.assertEquals( newSongList, response );
+		Assertions.assertTrue( response.isEmpty( ) );
 		verify( service, times( 1 ) ).readAll( );
 		given( ).when( ).get( "/songs" ).then( ).statusCode( Response.Status.OK.getStatusCode( ) );
 	}
@@ -486,7 +500,7 @@ public class SongControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = "" )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void delete_Fail_Credentials( ) {
 		doNothing( ).when( service ).delete( any( ) );
 
