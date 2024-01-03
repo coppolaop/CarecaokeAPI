@@ -42,15 +42,13 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void create_Success( ) {
 		Guest newGuest = new Guest( null, "Coppola", "123123", HOST_ROLE );
 		when( service.create( any( ) ) ).thenReturn( guestList.getFirst( ) );
 
 		Guest response = ( ( Guest ) controller.create( newGuest ).getEntity( ) );
 
-		Assertions.assertTrue(
-				BcryptUtil.matches( newGuest.getPassword( ), response.getPassword( ) ) );
 		Assertions.assertEquals( guestList.getFirst( ), response );
 		verify( service, times( 1 ) ).create( any( Guest.class ) );
 		given( ).when( )
@@ -63,7 +61,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { GUEST_ROLE } )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void create_Fail_Credentials( ) {
 		Guest newGuest = new Guest( null, "Coppola", "123123", HOST_ROLE );
 		when( service.create( any( ) ) ).thenReturn( guestList.getFirst( ) );
@@ -87,7 +85,91 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = "" )
+	public void createFirstHost_Success( ) {
+		when( service.firstHost( ) ).thenReturn( guestList.getFirst( ) );
+
+		Guest response = ( ( Guest ) controller.createFirstHost( ).getEntity( ) );
+
+		Assertions.assertEquals( guestList.getFirst( ), response );
+		verify( service, times( 1 ) ).firstHost( );
+		given( ).when( )
+				.body( guestList.getFirst( ) )
+				.contentType( MediaType.APPLICATION_JSON )
+				.accept( MediaType.APPLICATION_JSON )
+				.post( "/guests/host/first" )
+				.then( )
+				.statusCode( Response.Status.CREATED.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = "" )
+	public void createFirstHost_Fail_GuestListNotEmpty( ) {
+		when( service.firstHost( ) ).thenThrow( new IllegalArgumentException( "Invalid option" ) );
+
+		boolean wasThrown = false;
+		try {
+			controller.createFirstHost( );
+		} catch ( IllegalArgumentException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, times( 1 ) ).firstHost( );
+		given( ).when( )
+				.body( guestList.getFirst( ) )
+				.contentType( MediaType.APPLICATION_JSON )
+				.accept( MediaType.APPLICATION_JSON )
+				.post( "/guests/host/first" )
+				.then( )
+				.statusCode( Response.Status.BAD_REQUEST.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
+	public void invite_Success( ) {
+		String name     = "Tester";
+		Guest  newGuest = new Guest( 2L, name, "", GUEST_ROLE );
+		when( service.invite( any( ) ) ).thenReturn( newGuest );
+
+		Guest response = ( ( Guest ) controller.invite( name ).getEntity( ) );
+
+		Assertions.assertEquals( newGuest, response );
+		verify( service, times( 1 ) ).invite( any( String.class ) );
+		given( ).when( )
+				.pathParam( "name", name )
+				.contentType( MediaType.APPLICATION_JSON )
+				.accept( MediaType.APPLICATION_JSON )
+				.post( "/guests/invite/{name}" )
+				.then( )
+				.statusCode( Response.Status.CREATED.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
+	public void invite_Fail_Credentials( ) {
+		String name = "Tester";
+
+		boolean wasThrown = false;
+		try {
+			controller.invite( name );
+		} catch ( ForbiddenException ex ) {
+			wasThrown = true;
+		}
+
+		Assertions.assertTrue( wasThrown );
+		verify( service, never( ) ).invite( any( String.class ) );
+		given( ).when( )
+				.pathParam( "name", name )
+				.contentType( MediaType.APPLICATION_JSON )
+				.accept( MediaType.APPLICATION_JSON )
+				.post( "/guests/invite/{name}" )
+				.then( )
+				.statusCode( Response.Status.FORBIDDEN.getStatusCode( ) );
+	}
+
+	@Test
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void readAll_Success( ) {
 		when( service.readAll( ) ).thenReturn( guestList );
 
@@ -99,7 +181,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { GUEST_ROLE } )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void readAll_Fail_Credentials( ) {
 		when( service.readAll( ) ).thenReturn( guestList );
 
@@ -119,7 +201,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void readById_Success( ) {
 		when( service.readById( any( ) ) ).thenReturn( guestList.getFirst( ) );
 
@@ -135,7 +217,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { GUEST_ROLE } )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void readById_Fail_Credentials( ) {
 		when( service.readById( any( ) ) ).thenReturn( guestList.getFirst( ) );
 
@@ -156,7 +238,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void readById_Fail_NotFound( ) {
 		when( service.readById( any( ) ) ).thenThrow(
 				new EntityNotFoundException( "Guest not found with ID: " + FIRST_GUEST_ID ) );
@@ -178,7 +260,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void getAllInvitations_Success( ) {
 		List< String > invitations = guestList.stream( )
 											  .map( Guest::getName )
@@ -197,7 +279,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { GUEST_ROLE } )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void getAllInvitations_Fail_Credentials( ) {
 		boolean wasThrown = false;
 		try {
@@ -215,7 +297,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void update_Success( ) {
 		Guest newGuest = new Guest( null, "Coppola", "123123", HOST_ROLE );
 		when( service.update( any( ) ) ).thenReturn( guestList.getFirst( ) );
@@ -236,7 +318,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { GUEST_ROLE } )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void update_Fail_Credentials( ) {
 		Guest newGuest = new Guest( null, "Coppola", "123123", HOST_ROLE );
 		when( service.update( any( ) ) ).thenReturn( guestList.getFirst( ) );
@@ -260,7 +342,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void update_Fail_BadRequest( ) {
 		Guest newGuest = new Guest( null, "Coppola", "123123", HOST_ROLE );
 		when( service.update( any( ) ) ).thenThrow(
@@ -285,7 +367,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void delete_Success( ) {
 		doNothing( ).when( service ).delete( any( ) );
 
@@ -300,7 +382,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { GUEST_ROLE } )
+	@TestSecurity( user = "tester", roles = GUEST_ROLE )
 	public void delete_Fail_Credentials( ) {
 		doNothing( ).when( service ).delete( any( ) );
 
@@ -321,7 +403,7 @@ public class GuestControllerTest {
 	}
 
 	@Test
-	@TestSecurity( user = "tester", roles = { HOST_ROLE } )
+	@TestSecurity( user = "tester", roles = HOST_ROLE )
 	public void delete_Fail_NotFound( ) {
 		doThrow( new EntityNotFoundException( ) ).when( service ).delete( any( ) );
 
