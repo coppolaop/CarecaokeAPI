@@ -71,7 +71,7 @@ public class SongController {
 		return Response.ok( service.update( song ) ).build( );
 	}
 
-	@PUT
+	@PATCH
 	@Path( "next" )
 	@Transactional
 	@RolesAllowed( { HOST_ROLE } )
