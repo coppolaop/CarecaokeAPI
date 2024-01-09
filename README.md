@@ -179,7 +179,7 @@ This project is licensed under the [Apache License, Version 2.0](https://opensou
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<a href="https://github.com/timgl"><img src="https://avatars.githubusercontent.com/u/19476398?v=4" width="100" height="100" alt=""/></a>
+<a href="https://github.com/coppolaop"><img src="https://avatars.githubusercontent.com/u/19476398?v=4" width="100" height="100" alt=""/></a>
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
