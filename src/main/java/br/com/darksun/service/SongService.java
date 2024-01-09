@@ -104,7 +104,7 @@ public class SongService {
 		}
 		song.setSinger( guestService.readById( song.getSinger( ).getId( ) ) );
 
-		readMySongs( song.getSinger( ).getName( ) ).forEach( dbSong -> {
+		repository.findAllBySinger( song.getSinger( ) ).forEach( dbSong -> {
 			if ( dbSong.getName( ).equalsIgnoreCase( song.getName( ) ) && !dbSong.getId( )
 																				 .equals(
 																						 song.getId( ) ) ) {
