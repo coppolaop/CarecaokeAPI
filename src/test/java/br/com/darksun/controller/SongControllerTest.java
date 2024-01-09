@@ -37,14 +37,15 @@ public class SongControllerTest {
 	private List< Song >  songList;
 	private List< Guest > guestList;
 
-	private static final Long    FIRST_SONG_ID              = 1L;
-	private static final Integer FIRST_UNSUNG_SONG_POSITION = 2;
+	private static final Long    FIRST_SONG_ID = 1L;
+	private static       Integer FIRST_UNSUNG_SONG_POSITION;
 
 	@BeforeEach
 	void setUp( ) {
 		TestUtils utils = new TestUtils( );
-		songList  = utils.getSongs( );
-		guestList = utils.getGuests( );
+		songList                   = utils.getSongs( );
+		guestList                  = utils.getGuests( );
+		FIRST_UNSUNG_SONG_POSITION = utils.getFirstUnsong( );
 	}
 
 	@Test
@@ -443,7 +444,7 @@ public class SongControllerTest {
 		Assertions.assertEquals( songList.get( 1 ), response );
 		verify( service, times( 1 ) ).nextSong( );
 		given( ).when( )
-				.put( "/songs/next" )
+				.patch( "/songs/next" )
 				.then( )
 				.statusCode( Response.Status.OK.getStatusCode( ) );
 	}
@@ -458,7 +459,7 @@ public class SongControllerTest {
 		Assertions.assertEquals( null, response );
 		verify( service, times( 1 ) ).nextSong( );
 		given( ).when( )
-				.put( "/songs/next" )
+				.patch( "/songs/next" )
 				.then( )
 				.statusCode( Response.Status.OK.getStatusCode( ) );
 	}
@@ -479,7 +480,7 @@ public class SongControllerTest {
 		verify( service, never( ) ).update( any( Song.class ) );
 		given( ).when( )
 				.contentType( MediaType.APPLICATION_JSON )
-				.put( "/songs/next" )
+				.patch( "/songs/next" )
 				.then( )
 				.statusCode( Response.Status.FORBIDDEN.getStatusCode( ) );
 	}
