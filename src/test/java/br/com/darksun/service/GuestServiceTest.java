@@ -272,6 +272,7 @@ class GuestServiceTest {
 		Assertions.assertEquals( guestList.getFirst( ), response );
 		verify( repository, times( 1 ) ).findByIdOptional( any( ) );
 		verify( repository, times( 1 ) ).findByNameOptional( any( ) );
+		verify( entityManager, times( 1 ) ).merge( any( Guest.class ) );
 	}
 
 	@Test
