@@ -3,6 +3,7 @@ package br.com.darksun.service;
 import br.com.darksun.model.Guest;
 import br.com.darksun.model.Song;
 import br.com.darksun.repository.SongRepository;
+import br.com.darksun.util.Utils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
@@ -47,11 +48,7 @@ public class SongService {
 	public List< String > readAllNextSongs( ) {
 		List< Song >   nextSongs = repository.findAllByHasNotBeenSung( );
 		List< String > response  = new ArrayList<>( );
-		nextSongs.forEach( song -> response.add(
-				new StringBuilder( ).append( song.getSinger( ).getName( ) )
-									.append( " - " )
-									.append( song.getName( ) )
-									.toString( ) ) );
+		nextSongs.forEach( song -> response.add( Utils.formatSingerAndSong( song ) ) );
 		return response;
 	}
 
@@ -70,6 +67,9 @@ public class SongService {
 
 	public Song nextSong( ) {
 		Song song = repository.findByHasNotBeenSung( );
+		if ( song == null ) {
+			throw new IllegalArgumentException( "Song list is empty" );
+		}
 		song.setHasBeenSung( true );
 		repository.getEntityManager( ).merge( song );
 		return repository.findByHasNotBeenSung( );
