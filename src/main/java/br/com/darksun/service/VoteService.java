@@ -2,12 +2,12 @@ package br.com.darksun.service;
 
 import br.com.darksun.model.Vote;
 import br.com.darksun.repository.VoteRepository;
+import br.com.darksun.util.Utils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @ApplicationScoped
 public class VoteService {
@@ -36,6 +36,31 @@ public class VoteService {
 		return repository.findByIdOptional( id )
 						 .orElseThrow( ( ) -> new EntityNotFoundException(
 								 "Vote not found with ID: " + id ) );
+	}
+
+	public List< String > results( ) {
+		List< String >         results         = new ArrayList<>( );
+		Map< String, Integer > musicAndItVotes = new HashMap<>( );
+
+		readAll( ).forEach( vote -> {
+			String  singerAndSong = Utils.formatSingerAndSong( vote );
+			Integer score         = musicAndItVotes.getOrDefault( singerAndSong, 0 );
+			score += vote.getScore( );
+			musicAndItVotes.put( singerAndSong, score );
+		} );
+
+		musicAndItVotes.entrySet( )
+					   .stream( )
+					   .sorted( Map.Entry.comparingByValue( Collections.reverseOrder( ) ) )
+					   .forEach( result -> {
+						   results.add( new StringBuilder( result.getKey( ) ).append( " = " )
+																			 .append(
+																					 result.getValue( ) )
+																			 .append( " points" )
+																			 .toString( ) );
+					   } );
+
+		return results;
 	}
 
 	public void delete( Long id ) {
