@@ -1,12 +1,12 @@
 meta {
-  name: Create
+  name: MyVotes
   type: http
-  seq: 5
+  seq: 3
 }
 
-post {
-  url: {{java-url}}/votes
-  body: json
+get {
+  url: {{java-url}}/votes/mine
+  body: none
   auth: basic
 }
 
@@ -17,9 +17,13 @@ auth:basic {
 
 body:json {
   {
+    "id": 1,
     "score": 3,
     "itsFor": {
-      "id": 2
+      "id": 1
+    },
+    "whoVotes": {
+      "id": 1
     }
   }
 }

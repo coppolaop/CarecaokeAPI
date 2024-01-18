@@ -1,12 +1,12 @@
 meta {
-  name: Create
+  name: DeleteMyVote
   type: http
-  seq: 5
+  seq: 8
 }
 
-post {
-  url: {{java-url}}/votes
-  body: json
+delete {
+  url: {{java-url}}/votes/mine/2
+  body: none
   auth: basic
 }
 
@@ -17,9 +17,13 @@ auth:basic {
 
 body:json {
   {
+    "id": 1,
     "score": 3,
     "itsFor": {
-      "id": 2
+      "id": 1
+    },
+    "whoVotes": {
+      "id": 1
     }
   }
 }

@@ -46,12 +46,51 @@ public class VoteController {
 		return Response.ok( service.readById( id ) ).build( );
 	}
 
+	@GET
+	@Path( "mine" )
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response readMyVotes( @Context SecurityContext securityContext ) {
+		return Response.ok( service.readMyVotes( securityContext.getUserPrincipal( ).getName( ) ) )
+					   .build( );
+	}
+
+	@GET
+	@Path( "results" )
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response results( ) {
+		return Response.ok( service.results( ) ).build( );
+	}
+
+	@PATCH
+	@Path( "{id}/{score}" )
+	@Transactional
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response changeScore( @PathParam( "id" ) Long id, @PathParam( "score" ) Short score,
+								 @Context SecurityContext securityContext ) {
+		return Response.ok(
+							   service.changeScore( id, score, securityContext.getUserPrincipal( ).getName( ) ) )
+					   .build( );
+	}
+
 	@DELETE
 	@Path( "{id}" )
 	@Transactional
 	@RolesAllowed( HOST_ROLE )
 	public Response delete( @PathParam( "id" ) Long id ) {
 		service.delete( id );
+		return Response.noContent( ).build( );
+	}
+
+	@DELETE
+	@Path( "mine/{id}" )
+	@Transactional
+	@RolesAllowed( { HOST_ROLE, GUEST_ROLE } )
+	public Response deleteMyVotes( @PathParam( "id" ) Long id,
+								   @Context SecurityContext securityContext ) {
+		service.deleteMyVote( id, securityContext.getUserPrincipal( ).getName( ) );
 		return Response.noContent( ).build( );
 	}
 }

@@ -1,5 +1,6 @@
 package br.com.darksun.service;
 
+import br.com.darksun.model.Guest;
 import br.com.darksun.model.Vote;
 import br.com.darksun.repository.VoteRepository;
 import br.com.darksun.util.Utils;
@@ -38,6 +39,11 @@ public class VoteService {
 								 "Vote not found with ID: " + id ) );
 	}
 
+	public List< Vote > readMyVotes( String whoVotesName ) {
+		Guest whoVotes = guestService.readByName( whoVotesName );
+		return repository.findAllByWhoVotes( whoVotes );
+	}
+
 	public List< String > results( ) {
 		List< String >         results         = new ArrayList<>( );
 		Map< String, Integer > musicAndItVotes = new HashMap<>( );
@@ -63,11 +69,29 @@ public class VoteService {
 		return results;
 	}
 
+	public Vote changeScore( Long id, Short score, String whoVotesName ) {
+		Vote vote = readById( id );
+		vote.setScore( score );
+		applyBusinessRules( vote, whoVotesName );
+		repository.getEntityManager( ).merge( vote );
+		return vote;
+	}
+
 	public void delete( Long id ) {
 		boolean wasDeleted = repository.deleteById( id );
 		if ( !wasDeleted ) {
 			throw new EntityNotFoundException( "Vote not found with ID: " + id );
 		}
+	}
+
+	public void deleteMyVote( Long id, String whoVotesName ) {
+		Vote vote = readById( id );
+		if ( vote.getWhoVotes( ) == null || !vote.getWhoVotes( )
+												 .getName( )
+												 .equals( whoVotesName ) ) {
+			throw new IllegalArgumentException( "This vote is not yours" );
+		}
+		delete( id );
 	}
 
 	private void applyBusinessRules( Vote vote, String whoVotesName ) {
